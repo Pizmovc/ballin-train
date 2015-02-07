@@ -23,6 +23,7 @@ public class Krivulja : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
 		//bomo dal to v novo skripto za input (ker pač keys, touch...)
 		if(Input.GetKeyDown("a"))
 			kopijaTock.flipKrizisce(1); //flipa prvega

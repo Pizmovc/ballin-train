@@ -11,6 +11,7 @@ public class Pot: MonoBehaviour {
 	public Pot dol;				//spodnje križišče
 
 //spremeni enačbo za računanje smooth sailinga
+
 	//konstruktor za dodajanje daljice na začetek poti
 	public Pot(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
 		lokacija = rootDaljice.position;
@@ -73,5 +74,28 @@ public class Pot: MonoBehaviour {
 		else if (katero == 3)
 			dol.toggleKrizisca *= -1;
 			
-	}		
+	}
+	//from http://www.malczak.linuxpl.com/blog/quadratic-bezier-curve-length/
+	public float lengthKrivulje(Vector2 p0, Vector2 p1, Vector2 p2)
+	{
+		Vector2 a,b;
+		a.x = p0.x - 2*p1.x + p2.x;
+		a.y = p0.y - 2*p1.y + p2.y;
+		b.x = 2*p1.x - 2*p0.x;
+		b.y = 2*p1.y - 2*p0.y;
+		float A = 4*(a.x*a.x + a.y*a.y);
+		float B = 4*(a.x*b.x + a.y*b.y);
+		float C = b.x*b.x + b.y*b.y;
+		
+		float Sabc = 2*Mathf.Sqrt(A+B+C);
+		float A_2 = Mathf.Sqrt(A);
+		float A_32 = 2*A*A_2;
+		float C_2 = 2*Mathf.Sqrt(C);
+		float BA = B/A_2;
+		
+		return ( A_32*Sabc + 
+		        A_2*B*(Sabc-C_2) + 
+		        (4*C*A-B*B)*Mathf.Log( (2*A_2+BA+Sabc)/(BA+C_2) ) 
+		        )/(4*A_32);
+	}
 }
