@@ -75,27 +75,54 @@ public class Pot: MonoBehaviour {
 			dol.toggleKrizisca *= -1;
 			
 	}
+
+
+
 	//from http://www.malczak.linuxpl.com/blog/quadratic-bezier-curve-length/
-	public float lengthKrivulje(Vector2 p0, Vector2 p1, Vector2 p2)
+	public float lengthKrivulje()
 	{
-		Vector2 a,b;
-		a.x = p0.x - 2*p1.x + p2.x;
-		a.y = p0.y - 2*p1.y + p2.y;
-		b.x = 2*p1.x - 2*p0.x;
-		b.y = 2*p1.y - 2*p0.y;
-		float A = 4*(a.x*a.x + a.y*a.y);
-		float B = 4*(a.x*b.x + a.y*b.y);
-		float C = b.x*b.x + b.y*b.y;
-		
-		float Sabc = 2*Mathf.Sqrt(A+B+C);
-		float A_2 = Mathf.Sqrt(A);
-		float A_32 = 2*A*A_2;
-		float C_2 = 2*Mathf.Sqrt(C);
-		float BA = B/A_2;
-		
-		return ( A_32*Sabc + 
-		        A_2*B*(Sabc-C_2) + 
-		        (4*C*A-B*B)*Mathf.Log( (2*A_2+BA+Sabc)/(BA+C_2) ) 
-		        )/(4*A_32);
+		Vector2 p1 = lokacija;
+		Vector2 p2 = desno;
+		Vector2 p3 = p1;
+		Vector2 p4 = p1;
+		if(toggleKrizisca == 1){
+			p3 = gor.levo;
+			p4 = gor.lokacija;
+		}
+		else if(toggleKrizisca == -1){
+			p3 = dol.levo;
+			p4 = dol.lokacija;
+		}
+
+		float inc = 10;
+		float length = 0.0f;
+		float t = 0.0f ;
+		Vector2 pt  = new Vector2(); 
+		Vector2 prevPt = new Vector2 ();
+
+		for (int i = 0; i < inc; i++){
+			
+			t = i / 100;
+				
+			float t1 = 1.0f - t; 
+			float t1_3 = t1*t1*t1;
+			float t1_3a = (3*t)*(t1*t1);
+			float t1_3b = (3*(t*t))*t1;
+			float t1_3c = (t * t * t );
+			
+			pt.x = (p1.x * t1_3) + (t1_3a * p2.x) + (t1_3b * p3).x + (t1_3c * p4.x);
+			pt.x = (p1.y * t1_3) + (t1_3a * p2.y) + (t1_3b * p3.y) + (t1_3c * p4.y);
+				
+			if (i > 0){
+				float x = pt.x - prevPt.x;
+				float y = pt.y - prevPt.y;
+				length = length + Mathf.Sqrt(x*x+y*y);
+			}
+						
+			prevPt.x = pt.x;
+			prevPt.y = pt.y;
+						
+		}
+		return(length);
 	}
 }

@@ -9,6 +9,7 @@ public class Krivulja : MonoBehaviour {
 	Pot vseTocke, zacetekDaljice, kopijaTock;
 	Vector2 q1, q0;
 	int spominPoti;
+	float dolzinaOdseka;
 
 	void Start(){
 		t = 0;						//pozicija na krivulji, 0 - 1 0=zacPoint, 1=konPoint
@@ -35,6 +36,18 @@ public class Krivulja : MonoBehaviour {
 		//ko krogljica začne (t=0) na novem odseku poti, si zapomni kjer mora iti
 		if(t == 0){
 			spominPoti = vseTocke.toggleKrizisca;
+			//1 je gor
+			if(spominPoti == 1){
+				//dolzinaOdseka = vseTocke.lengthKrivulje();
+			}
+			//-1 je dol
+			else if(spominPoti == -1){
+
+			}
+			//0 je konec
+			else if (spominPoti == 0){
+
+			}
 			t += 0.008f;
 		}
 		//če še nismo prišli do konca
