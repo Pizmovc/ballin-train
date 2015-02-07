@@ -1,0 +1,13 @@
+[color]
+	ui = auto
+[core]
+	editor = 'D:/Programi/Sublime Text 3/sublime_text.exe' -w
+[push]
+	default = upstream
+[merge]
+	conflictstyle = diff3
+[user]
+	email = pizmovc@gmail.com
+	name = Pizmovc
+[credential]
+	helper = wincred
