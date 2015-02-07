@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Krivulja : MonoBehaviour {
-	
+	public float hitrost;
 	public Transform root;
 	public Transform rootDaljice, rootDaljiceDesno;
 	float t;
@@ -36,9 +36,11 @@ public class Krivulja : MonoBehaviour {
 		//ko krogljica začne (t=0) na novem odseku poti, si zapomni kjer mora iti
 		if(t == 0){
 			spominPoti = vseTocke.toggleKrizisca;
+
+			dolzinaOdseka = vseTocke.lengthKrivulje();
 			//1 je gor
 			if(spominPoti == 1){
-				//dolzinaOdseka = vseTocke.lengthKrivulje();
+
 			}
 			//-1 je dol
 			else if(spominPoti == -1){
@@ -48,7 +50,8 @@ public class Krivulja : MonoBehaviour {
 			else if (spominPoti == 0){
 
 			}
-			t += 0.008f;
+			Debug.Log(dolzinaOdseka);
+			t += (hitrost/dolzinaOdseka)/200;
 		}
 		//če še nismo prišli do konca
 		else if (t < 1) { 	

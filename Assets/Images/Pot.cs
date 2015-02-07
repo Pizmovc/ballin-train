@@ -94,15 +94,15 @@ public class Pot: MonoBehaviour {
 			p4 = dol.lokacija;
 		}
 
-		float inc = 10;
+		float inc = 200;
 		float length = 0.0f;
 		float t = 0.0f ;
-		Vector2 pt  = new Vector2(); 
-		Vector2 prevPt = new Vector2 ();
+		Vector2 pt  = p1; 
+		Vector2 prevPt = p1;
 
 		for (int i = 0; i < inc; i++){
 			
-			t = i / 100;
+			t = i / inc;
 				
 			float t1 = 1.0f - t; 
 			float t1_3 = t1*t1*t1;
@@ -123,6 +123,7 @@ public class Pot: MonoBehaviour {
 			prevPt.y = pt.y;
 						
 		}
+
 		return(length);
 	}
 }
