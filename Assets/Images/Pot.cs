@@ -15,10 +15,10 @@ public class Pot: MonoBehaviour {
 	//konstruktor za dodajanje daljice na začetek poti
 	public Pot(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
 		lokacija = rootDaljice.position;
-		desno = new Vector2(2*(rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X desne kontrolne točke začetka daljice za smooth sailing
-		endDaljice.levo = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
+		desno = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X desne kontrolne točke začetka daljice za smooth sailing
 		toggleKrizisca = 1;	//vedno 1 (gre "gor", samo da gre naravnost) 
 		gor = endDaljice;
+		gor.levo = new Vector2(2*(rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
 		dol = null;
 	}
 
@@ -94,7 +94,7 @@ public class Pot: MonoBehaviour {
 			p4 = dol.lokacija;
 		}
 
-		float inc = 200;
+		float inc = 100;
 		float length = 0.0f;
 		float t = 0.0f ;
 		Vector2 pt  = p1; 

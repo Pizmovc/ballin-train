@@ -15,11 +15,12 @@ public class Krivulja : MonoBehaviour {
 		t = 0;						//pozicija na krivulji, 0 - 1 0=zacPoint, 1=konPoint
 		vseTocke= new Pot (root);	//zgradimo pot
 		q0 = vseTocke.lokacija; 	//izračunamo začetno točko (naj bi bila zacPoint
-		transform.Translate(q0);	//premaknemo krogljico na začetno točko
+
 
 		zacetekDaljice = new Pot (rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
 		vseTocke = zacetekDaljice;	//postavimo začetek poti na začetek daljice
 		kopijaTock = vseTocke.gor;	//si shranimo pot (za input)
+		transform.Translate(zacetekDaljice.lokacija);	//premaknemo krogljico na začetno točko
 	}
 
 	// Update is called once per frame
@@ -38,20 +39,11 @@ public class Krivulja : MonoBehaviour {
 			spominPoti = vseTocke.toggleKrizisca;
 
 			dolzinaOdseka = vseTocke.lengthKrivulje();
-			//1 je gor
-			if(spominPoti == 1){
-
-			}
-			//-1 je dol
-			else if(spominPoti == -1){
-
-			}
-			//0 je konec
-			else if (spominPoti == 0){
-
-			}
 			Debug.Log(dolzinaOdseka);
-			t += (hitrost/dolzinaOdseka)/200;
+			/*
+			if(dolzinaOdseka == 0)
+				t*/
+			t += dolzinaOdseka/(hitrost*100);
 		}
 		//če še nismo prišli do konca
 		else if (t < 1) { 	
