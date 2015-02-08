@@ -5,6 +5,7 @@ public class Krivulja : MonoBehaviour {
 	
 	public Transform root;
 	public Transform rootDaljice, rootDaljiceDesno;
+	public GameObject tocka;
 	float t;
 	Pot vseTocke, zacetekDaljice, kopijaTock;
 	Vector2 q1, q0;
@@ -18,6 +19,7 @@ public class Krivulja : MonoBehaviour {
 
 		zacetekDaljice = new Pot (rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
 		vseTocke = zacetekDaljice;	//postavimo začetek poti na začetek daljice
+		vseTocke.narisiPot (tocka);
 		kopijaTock = vseTocke.gor;	//si shranimo pot (za input)
 	}
 
