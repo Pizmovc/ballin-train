@@ -12,8 +12,6 @@ public class Pot: MonoBehaviour {
 	public int steviloTockNaKrivulji = 50;
 	public Vector2[,] tocke = new Vector2[2,50];
 
-
-//spremeni enačbo za računanje smooth sailinga
 	//konstruktor za dodajanje daljice na začetek poti
 	public Pot(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
 		lokacija = rootDaljice.position;
@@ -61,22 +59,14 @@ public class Pot: MonoBehaviour {
 		for(int i = 0; i < stTock; i++){
 			t = (float)i/stTock;
 			if(toggleKrizisca == 2){
-				//Debug.Log("bezier: " + izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija));
 				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
-				Debug.Log("gor t : "+t+"lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[0, i]); 
 				
 			}
 			else if(toggleKrizisca != 0){
-				//Debug.Log("bezier: " + izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija));
 				tocke[1,i] = izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija);
-				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
-				Debug.Log("gor t : "+t+"lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[0, i]); 
-				Debug.Log("dol t : "+t+"lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[1, i]); 
+				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija); 
 				
 			}
-			else
-				Debug.Log("Konec");
-
 		}
 		if(toggleKrizisca !=0)
 			gor.napolniTabeloTock(stTock);
