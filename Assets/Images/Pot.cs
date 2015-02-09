@@ -12,6 +12,7 @@ public class Pot: MonoBehaviour {
 	public float dolzinaOdseka = 0.1f;
 	public int stTockZaNatancnost = 500;
 	public Vector2[,] tocke = new Vector2[2,500];
+	public int[] stEltov = new int[2];
 
 	//metoda za dodajanje daljice na začetek poti
 	public Pot dodajDaljico(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
@@ -21,7 +22,7 @@ public class Pot: MonoBehaviour {
 		root.toggleKrizisca = 2;	//vedno 2 (gre "gor", samo da gre naravnost in nima poti za dol)
 		endDaljice.levo = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
 		root.gor = endDaljice;
-		root.napolniTabeloTock (stTockZaNatancnost, dolzinaOdseka);
+		root.napolniTabeloTock (stTockZaNatancnost, dolzinaOdseka, new Vector2(99,99));
 		return(root);
 	}
 
@@ -33,13 +34,13 @@ public class Pot: MonoBehaviour {
 
 	public void izrisiTrenutneKroglice(GameObject tocka){
 		if (toggleKrizisca > 0) {
-			for(int i = 0; i < tocke.Length /2; i++){
+			for(int i = 0; i < stEltov[0]; i++){
 				Instantiate(tocka,new Vector3(tocke[0,i].x,tocke[0,i].y, -1),Quaternion.identity);
 			} 
 			gor.izrisiTrenutneKroglice(tocka);
 		}
 		else if(toggleKrizisca < 0){
-			for(int i = 0; i < tocke.Length /2; i++){
+			for(int i = 0; i < stEltov[1]; i++){
 				Instantiate(tocka,new Vector3(tocke[1,i].x,tocke[1,i].y, -1),Quaternion.identity);
 				
 			}
@@ -49,16 +50,16 @@ public class Pot: MonoBehaviour {
 
 	public void narisiVsePoti(GameObject tocka){
 		if (toggleKrizisca == 2) {
-			for(int i = 0; i< tocke.GetLength(0); i++){
+			for(int i = 0; i< stEltov[0]; i++){
 				Instantiate(tocka,tocke[0,i],Quaternion.identity);
 			} 
 			gor.narisiVsePoti(tocka);
 		}
 		else if(toggleKrizisca != 0){
-			for(int i = 0; i < tocke.GetLength(0); i++)
+			for(int i = 0; i < stEltov[0]; i++)
 				Instantiate(tocka,tocke[0,i],Quaternion.identity);
 
-			for(int i = 0; i < tocke.GetLength(1); i++)
+			for(int i = 0; i < stEltov[1]; i++)
 				Instantiate(tocka,tocke[1,i],Quaternion.identity);
 
 			gor.narisiVsePoti(tocka);
@@ -66,9 +67,17 @@ public class Pot: MonoBehaviour {
 		}
 	}
 
-	public void napolniTabeloTock(int stTock, float dolzOdseka){
-		Vector2 p0g = lokacija;
-		Vector2 p0d = lokacija;
+	public void napolniTabeloTock(int stTock, float dolzOdseka, Vector2 lastP){
+		Vector2 p0g;
+		Vector2 p0d;
+			if (lastP == new Vector2(99,99)) {
+			p0g = lokacija;
+			p0d = lokacija;
+		}
+		else{
+			p0g = lastP;
+			p0d = lastP;
+		}
 		Vector2 p1g;
 		Vector2 p1d;
 		int stTockVTabeliG = 0;
@@ -101,9 +110,11 @@ public class Pot: MonoBehaviour {
 					}
 				}
 			}
+			stEltov[0]= stTockVTabeliG;
+			stEltov[1]= stTockVTabeliD;
 			if(toggleKrizisca !=2)
-				dol.napolniTabeloTock(stTock,dolzOdseka);
-			gor.napolniTabeloTock(stTock, dolzOdseka);
+				dol.napolniTabeloTock(stTock,dolzOdseka, p0d);
+			gor.napolniTabeloTock(stTock, dolzOdseka, p0g);
 		}
 	}
 	//metoda za izgradnjo poti brez daljice

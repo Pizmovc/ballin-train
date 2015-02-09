@@ -14,7 +14,7 @@ public class Krivulja : MonoBehaviour {
 		vseTocke = gameObject.AddComponent<Pot> ();
 		vseTocke.izgradiPot(root);	//zgradimo pot
 		vseTocke = vseTocke.dodajDaljico(rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
-		vseTocke.narisiVsePoti (tockaPot);
+		//vseTocke.narisiVsePoti (tockaPot);
 		vseTocke.narisiPot (tockaPotIzbrana);
 	}
 
