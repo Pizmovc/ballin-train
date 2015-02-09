@@ -7,6 +7,7 @@ public class Krivulja : MonoBehaviour {
 	public Transform rootDaljice, rootDaljiceDesno;
 	public GameObject tockaPot;
 	public GameObject tockaPotIzbrana;
+	public Material barvaCrte;
 	Pot vseTocke, kopijaTock;
 	int spominPoti;
 
@@ -15,12 +16,12 @@ public class Krivulja : MonoBehaviour {
 		vseTocke.izgradiPot(root);	//zgradimo pot
 		vseTocke = vseTocke.dodajDaljico(rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
 		//vseTocke.narisiVsePoti (tockaPot);
-		vseTocke.narisiPot (tockaPotIzbrana);
+		//vseTocke.narisiPot (tockaPotIzbrana);
+		vseTocke.poveziTockeVPot (barvaCrte);
 	}
 
 	// Update is called once per frame
 	void Update () {
-
 		//bomo dal to v novo skripto za input (ker pač keys, touch...)
 		if(Input.GetKeyDown("a")){
 			vseTocke.flipKrizisce(1); //flipa prvega

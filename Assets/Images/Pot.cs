@@ -26,6 +26,62 @@ public class Pot: MonoBehaviour {
 		return(root);
 	}
 
+	public void poveziTockeVPot(Material barva){
+		GameObject[] potiObjects = new GameObject[4];
+		LineRenderer[] potiLines = new LineRenderer[4];
+		for(int i = 0; i < 4; i++){
+			potiObjects[i] = new GameObject();
+			potiObjects[i].AddComponent<LineRenderer> ();
+			potiObjects[i].GetComponent<LineRenderer>().material = barva;
+			potiObjects[i].GetComponent<LineRenderer>().SetWidth (0.1f, 0.1f);
+			potiObjects[i].GetComponent<LineRenderer>().SetColors (Color.blue, Color.blue);
+			potiLines[i] = potiObjects[i].GetComponent<LineRenderer>();
+		}
+		potiLines [0].SetVertexCount (stEltov [0] + gor.stEltov[0] + gor.gor.stEltov[0]);
+		for (int i = 0; i < stEltov [0]; i++) {
+			potiLines[0].SetPosition(i,tocke[0,i]);
+		}
+		for (int i = 0; i < gor.stEltov [0]; i++) {
+			potiLines[0].SetPosition(i+stEltov[0],gor.tocke[0,i]);
+		}
+		for (int i = 0; i < gor.gor.stEltov [0]; i++) {
+			potiLines[0].SetPosition(i+stEltov[0]+gor.stEltov [0],gor.gor.tocke[0,i]);
+		}
+
+		potiLines [1].SetVertexCount (stEltov [0] + gor.stEltov[0] + gor.gor.stEltov[1]);
+		for (int i = 0; i < stEltov [0]; i++) {
+			potiLines[1].SetPosition(i,tocke[0,i]);
+		}
+		for (int i = 0; i < gor.stEltov [0]; i++) {
+			potiLines[1].SetPosition(i+stEltov[0],gor.tocke[0,i]);
+		}
+		for (int i = 0; i < gor.gor.stEltov [1]; i++) {
+			potiLines[1].SetPosition(i+stEltov[0]+gor.stEltov [0],gor.gor.tocke[1,i]);
+		}
+
+		potiLines [2].SetVertexCount (stEltov [0] + gor.stEltov[1] + gor.dol.stEltov[0]);
+		for (int i = 0; i < stEltov [0]; i++) {
+			potiLines[2].SetPosition(i,tocke[0,i]);
+		}
+		for (int i = 0; i < gor.stEltov [1]; i++) {
+			potiLines[2].SetPosition(i+stEltov[0],gor.tocke[1,i]);
+		}
+		for (int i = 0; i < gor.dol.stEltov [0]; i++) {
+			potiLines[2].SetPosition(i+stEltov[0]+gor.stEltov [1],gor.dol.tocke[0,i]);
+		}
+		
+		potiLines [3].SetVertexCount (stEltov [0] + gor.stEltov[1] + gor.dol.stEltov[1]);
+		for (int i = 0; i < stEltov [0]; i++) {
+			potiLines[3].SetPosition(i,tocke[0,i]);
+		}
+		for (int i = 0; i < gor.stEltov [1]; i++) {
+			potiLines[3].SetPosition(i+stEltov[0],gor.tocke[1,i]);
+		}
+		for (int i = 0; i < gor.dol.stEltov [1]; i++) {
+			potiLines[3].SetPosition(i+stEltov[0]+gor.stEltov [1],gor.dol.tocke[1,i]);
+		}
+	}
+	
 	public void narisiPot(GameObject tocka){
 		foreach(GameObject temp in GameObject.FindGameObjectsWithTag("trenutnaPotTocka"))
 		      GameObject.Destroy(temp);
