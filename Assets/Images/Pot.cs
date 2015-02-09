@@ -9,8 +9,8 @@ public class Pot: MonoBehaviour {
 	public Vector2 desno;		//position od desne kontrolne točke
 	public Pot gor = null;				//zgornje križišče
 	public Pot dol = null;				//spodnje križišče
-	public int steviloTockNaKrivulji = 10;
-	public Vector2[,] tocke = new Vector2[2,10];
+	public int steviloTockNaKrivulji = 50;
+	public Vector2[,] tocke = new Vector2[2,50];
 
 
 //spremeni enačbo za računanje smooth sailinga
@@ -18,7 +18,7 @@ public class Pot: MonoBehaviour {
 	public Pot(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
 		lokacija = rootDaljice.position;
 		desno = new Vector2(2*(rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X desne kontrolne točke začetka daljice za smooth sailing
-		toggleKrizisca = 2;	//vedno 1 (gre "gor", samo da gre naravnost)
+		toggleKrizisca = 2;	//vedno 2 (gre "gor", samo da gre naravnost in nima poti za dol)
 		endDaljice.levo = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
 		gor = endDaljice;
 		this.napolniTabeloTock (steviloTockNaKrivulji);
@@ -39,24 +39,39 @@ public class Pot: MonoBehaviour {
 		}
 	}
 
+	public void narisiVsePoti(GameObject tocka){
+		if (toggleKrizisca == 2) {
+			for(int i = 0; i< steviloTockNaKrivulji; i++){
+				Instantiate(tocka,tocke[0,i],Quaternion.identity);
+			} 
+			gor.narisiVsePoti(tocka);
+		}
+		else if(toggleKrizisca != 0){
+			for(int i = 0; i< steviloTockNaKrivulji; i++){
+				Instantiate(tocka,tocke[1,i],Quaternion.identity);
+				Instantiate(tocka,tocke[0,i],Quaternion.identity);
+			} 
+			gor.narisiVsePoti(tocka);
+			dol.narisiVsePoti(tocka);
+		}
+	}
+
 	public void napolniTabeloTock(int stTock){
 		float t = 0;
 		for(int i = 0; i < stTock; i++){
 			t = (float)i/stTock;
-			Debug.Log("t : "+t);
-
-			Debug.Log("gornji" + desno);
-			if(toggleKrizisca == 1 || toggleKrizisca == 2){
+			if(toggleKrizisca == 2){
 				//Debug.Log("bezier: " + izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija));
 				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
-				Debug.Log("lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[0, i]); 
+				Debug.Log("gor t : "+t+"lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[0, i]); 
 				
 			}
-			Debug.Log("spodnji");
-			if(toggleKrizisca == -1){
+			else if(toggleKrizisca != 0){
 				//Debug.Log("bezier: " + izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija));
 				tocke[1,i] = izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija);
-				Debug.Log("lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[1, i]); 
+				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
+				Debug.Log("gor t : "+t+"lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[0, i]); 
+				Debug.Log("dol t : "+t+"lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[1, i]); 
 				
 			}
 			else
@@ -104,7 +119,7 @@ public class Pot: MonoBehaviour {
 			toggleKrizisca = 0;
 		//drugače ni končna točka in postavimo default vrednosti
 		else
-			toggleKrizisca = 1;
+			toggleKrizisca = -1;
 		
 	}
 

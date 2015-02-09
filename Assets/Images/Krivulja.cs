@@ -19,12 +19,13 @@ public class Krivulja : MonoBehaviour {
 
 		zacetekDaljice = new Pot (rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
 		vseTocke = zacetekDaljice;	//postavimo začetek poti na začetek daljice
-		vseTocke.narisiPot (tocka);
+		vseTocke.narisiVsePoti (tocka);
 		kopijaTock = vseTocke.gor;	//si shranimo pot (za input)
 	}
 
 	// Update is called once per frame
 	void Update () {
+		//vseTocke.narisiPot (tocka);
 		//bomo dal to v novo skripto za input (ker pač keys, touch...)
 		if(Input.GetKeyDown("a"))
 			kopijaTock.flipKrizisce(1); //flipa prvega
