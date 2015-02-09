@@ -7,33 +7,44 @@ public class Pot: MonoBehaviour {
 	public Vector2 lokacija;	//transform.position od točke
 	public Vector2 levo;		//position od leve kontrolne točke
 	public Vector2 desno;		//position od desne kontrolne točke
-	public Pot gor = null;				//zgornje križišče
-	public Pot dol = null;				//spodnje križišče
-	public int steviloTockNaKrivulji = 50;
-	public Vector2[,] tocke = new Vector2[2,50];
+	public Pot gor;				//zgornje križišče
+	public Pot dol;				//spodnje križišče
+	public int steviloTockNaKrivulji = 10;
+	public Vector2[,] tocke = new Vector2[2,10];
 
-	//konstruktor za dodajanje daljice na začetek poti
-	public Pot(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
-		lokacija = rootDaljice.position;
-		desno = new Vector2(2*(rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X desne kontrolne točke začetka daljice za smooth sailing
-		toggleKrizisca = 2;	//vedno 2 (gre "gor", samo da gre naravnost in nima poti za dol)
+	//metoda za dodajanje daljice na začetek poti
+	public Pot dodajDaljico(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
+		Pot root = gameObject.AddComponent<Pot> ();
+		root.lokacija = rootDaljice.position;
+		root.desno = new Vector2(2*(rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X desne kontrolne točke začetka daljice za smooth sailing
+		root.toggleKrizisca = 2;	//vedno 2 (gre "gor", samo da gre naravnost in nima poti za dol)
 		endDaljice.levo = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
-		gor = endDaljice;
-		this.napolniTabeloTock (steviloTockNaKrivulji);
+		root.gor = endDaljice;
+		root.napolniTabeloTock (steviloTockNaKrivulji);
+		return(root);
 	}
 
 	public void narisiPot(GameObject tocka){
+		foreach(GameObject temp in GameObject.FindGameObjectsWithTag("trenutnaPotTocka"))
+		      GameObject.Destroy(temp);
+		Debug.Log ("Gremo risat");
+		izrisiKroglice (tocka);
+	}
+
+	public void izrisiKroglice(GameObject tocka){
+		Debug.Log ("Risem");
 		if (toggleKrizisca == 1 || toggleKrizisca == 2) {
 			for(int i = 0; i< steviloTockNaKrivulji; i++){
-				Instantiate(tocka,tocke[0,i],Quaternion.identity);
+				Instantiate(tocka,new Vector3(tocke[0,i].x,tocke[0,i].y, -1),Quaternion.identity);
 			} 
-			gor.narisiPot(tocka);
+			gor.izrisiKroglice(tocka);
 		}
 		else if(toggleKrizisca == -1){
 			for(int i = 0; i< steviloTockNaKrivulji; i++){
-				Instantiate(tocka,tocke[1,i],Quaternion.identity);
+				Instantiate(tocka,new Vector3(tocke[1,i].x,tocke[1,i].y, -1),Quaternion.identity);
+				
 			}
-			dol.narisiPot(tocka);
+			dol.izrisiKroglice(tocka);
 		}
 	}
 
@@ -55,40 +66,42 @@ public class Pot: MonoBehaviour {
 	}
 
 	public void napolniTabeloTock(int stTock){
-		float t = 0;
-		for(int i = 0; i < stTock; i++){
-			t = (float)i/stTock;
-			if(toggleKrizisca == 2){
-				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
-				
+		if(toggleKrizisca != 0){
+
+			float t = 0;
+			for(int i = 0; i < stTock; i++){
+				t = (float)i/stTock;
+				if(toggleKrizisca == 2){
+					tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
+				}
+				else{
+					tocke[1,i] = izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija);
+					tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija); 
+				}
+
 			}
-			else if(toggleKrizisca != 0){
-				tocke[1,i] = izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija);
-				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija); 
-				
-			}
-		}
-		if(toggleKrizisca !=0)
+			if(toggleKrizisca !=2)
+				dol.napolniTabeloTock(stTock);
 			gor.napolniTabeloTock(stTock);
-		if(toggleKrizisca != 2 && toggleKrizisca != 0)
-			dol.napolniTabeloTock(stTock);
+		}
 	}
-	//konstruktor za izgradnjo poti brez daljice
-	public Pot(Transform root){
+	//metoda za izgradnjo poti brez daljice
+	public void izgradiPot(Transform root){
 		lokacija = root.position;
 		int stevecOtrok = 0;
-
 		//pogleda vse otroke trenutne točke in jih "rekurzivno" doda na pot
 		foreach (Transform child in root)
 		{
 			stevecOtrok++;
 			//gornje križišče
 			if(child.position.y > root.position.y){
-				gor =  new Pot(child);
+				gor = gameObject.AddComponent<Pot> ();
+				gor.izgradiPot(child);
 			}
 			//spodnje križišče
 			else if (child.position.y < root.position.y){
-				dol = new Pot(child);
+				dol = gameObject.AddComponent<Pot> ();
+				dol.izgradiPot(child);
 			}
 			//leva/desna kontrolna točka
 			else{
@@ -109,7 +122,7 @@ public class Pot: MonoBehaviour {
 			toggleKrizisca = 0;
 		//drugače ni končna točka in postavimo default vrednosti
 		else
-			toggleKrizisca = -1;
+			toggleKrizisca = 1;
 		
 	}
 
@@ -117,13 +130,13 @@ public class Pot: MonoBehaviour {
 	public void flipKrizisce(int katero){
 		//to je prvo
 		if(katero == 1)
-			toggleKrizisca *= -1;
+			gor.toggleKrizisca *= -1;
 		//zgornje
 		else if (katero == 2)
-			gor.toggleKrizisca *= -1;
+			gor.gor.toggleKrizisca *= -1;
 		//spodnje
 		else if (katero == 3)
-			dol.toggleKrizisca *= -1;
+			gor.dol.toggleKrizisca *= -1;
 			
 	}
 

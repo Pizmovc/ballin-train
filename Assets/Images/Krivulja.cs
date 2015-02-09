@@ -11,9 +11,10 @@ public class Krivulja : MonoBehaviour {
 	int spominPoti;
 
 	void Start(){					//pozicija na krivulji, 0 - 1 0=zacPoint, 1=konPoint
-		vseTocke = new Pot (root);	//zgradimo pot
-		vseTocke = new Pot (rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
-		vseTocke.narisiVsePoti (tockaPot);
+		vseTocke = gameObject.AddComponent<Pot> ();
+		vseTocke.izgradiPot(root);	//zgradimo pot
+		vseTocke = vseTocke.dodajDaljico(rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
+		//vseTocke.narisiVsePoti (tockaPot);
 	}
 
 	// Update is called once per frame
