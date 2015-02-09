@@ -7,10 +7,10 @@ public class Pot: MonoBehaviour {
 	public Vector2 lokacija;	//transform.position od točke
 	public Vector2 levo;		//position od leve kontrolne točke
 	public Vector2 desno;		//position od desne kontrolne točke
-	public Pot gor;				//zgornje križišče
-	public Pot dol;				//spodnje križišče
-	public int steviloTockNaKrivulji = 100;
-	public Vector2[,] tocke = new Vector2[2,100];
+	public Pot gor = null;				//zgornje križišče
+	public Pot dol = null;				//spodnje križišče
+	public int steviloTockNaKrivulji = 10;
+	public Vector2[,] tocke = new Vector2[2,10];
 
 
 //spremeni enačbo za računanje smooth sailinga
@@ -18,15 +18,14 @@ public class Pot: MonoBehaviour {
 	public Pot(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
 		lokacija = rootDaljice.position;
 		desno = new Vector2(2*(rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X desne kontrolne točke začetka daljice za smooth sailing
+		toggleKrizisca = 2;	//vedno 1 (gre "gor", samo da gre naravnost)
 		endDaljice.levo = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
-		toggleKrizisca = 1;	//vedno 1 (gre "gor", samo da gre naravnost)
 		gor = endDaljice;
-		dol = null;
-		this.napolniTabeloTock (100);
+		this.napolniTabeloTock (steviloTockNaKrivulji);
 	}
 
 	public void narisiPot(GameObject tocka){
-		if (toggleKrizisca == 1) {
+		if (toggleKrizisca == 1 || toggleKrizisca == 2) {
 			for(int i = 0; i< steviloTockNaKrivulji; i++){
 				Instantiate(tocka,tocke[0,i],Quaternion.identity);
 			} 
@@ -46,25 +45,27 @@ public class Pot: MonoBehaviour {
 			t = (float)i/stTock;
 			Debug.Log("t : "+t);
 
-			Debug.Log("gornji");
-			if(gor != null){
+			Debug.Log("gornji" + desno);
+			if(toggleKrizisca == 1 || toggleKrizisca == 2){
+				//Debug.Log("bezier: " + izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija));
 				tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
 				Debug.Log("lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[0, i]); 
 				
 			}
 			Debug.Log("spodnji");
-			if(dol != null){
+			if(toggleKrizisca == -1){
+				//Debug.Log("bezier: " + izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija));
 				tocke[1,i] = izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija);
 				Debug.Log("lokacija originalne tocke: " + lokacija + " Lokacija tocke: " + tocke[1, i]); 
 				
 			}
 			else
-				Debug.Log("Dol == null");
+				Debug.Log("Konec");
 
 		}
-		if(gor != null)
+		if(toggleKrizisca !=0)
 			gor.napolniTabeloTock(stTock);
-		if(dol != null)
+		if(toggleKrizisca != 2 && toggleKrizisca != 0)
 			dol.napolniTabeloTock(stTock);
 	}
 	//konstruktor za izgradnjo poti brez daljice
