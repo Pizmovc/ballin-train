@@ -9,8 +9,9 @@ public class Pot: MonoBehaviour {
 	public Vector2 desno;		//position od desne kontrolne točke
 	public Pot gor;				//zgornje križišče
 	public Pot dol;				//spodnje križišče
-	public int steviloTockNaKrivulji = 10;
-	public Vector2[,] tocke = new Vector2[2,10];
+	public float dolzinaOdseka = 0.1f;
+	public int stTockZaNatancnost = 500;
+	public Vector2[,] tocke = new Vector2[2,500];
 
 	//metoda za dodajanje daljice na začetek poti
 	public Pot dodajDaljico(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
@@ -20,69 +21,89 @@ public class Pot: MonoBehaviour {
 		root.toggleKrizisca = 2;	//vedno 2 (gre "gor", samo da gre naravnost in nima poti za dol)
 		endDaljice.levo = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
 		root.gor = endDaljice;
-		root.napolniTabeloTock (steviloTockNaKrivulji);
+		root.napolniTabeloTock (stTockZaNatancnost, dolzinaOdseka);
 		return(root);
 	}
 
 	public void narisiPot(GameObject tocka){
 		foreach(GameObject temp in GameObject.FindGameObjectsWithTag("trenutnaPotTocka"))
 		      GameObject.Destroy(temp);
-		Debug.Log ("Gremo risat");
-		izrisiKroglice (tocka);
+		izrisiTrenutneKroglice (tocka);
 	}
 
-	public void izrisiKroglice(GameObject tocka){
-		Debug.Log ("Risem");
-		if (toggleKrizisca == 1 || toggleKrizisca == 2) {
-			for(int i = 0; i< steviloTockNaKrivulji; i++){
+	public void izrisiTrenutneKroglice(GameObject tocka){
+		if (toggleKrizisca > 0) {
+			for(int i = 0; i < tocke.Length /2; i++){
 				Instantiate(tocka,new Vector3(tocke[0,i].x,tocke[0,i].y, -1),Quaternion.identity);
 			} 
-			gor.izrisiKroglice(tocka);
+			gor.izrisiTrenutneKroglice(tocka);
 		}
-		else if(toggleKrizisca == -1){
-			for(int i = 0; i< steviloTockNaKrivulji; i++){
+		else if(toggleKrizisca < 0){
+			for(int i = 0; i < tocke.Length /2; i++){
 				Instantiate(tocka,new Vector3(tocke[1,i].x,tocke[1,i].y, -1),Quaternion.identity);
 				
 			}
-			dol.izrisiKroglice(tocka);
+			dol.izrisiTrenutneKroglice(tocka);
 		}
 	}
 
 	public void narisiVsePoti(GameObject tocka){
 		if (toggleKrizisca == 2) {
-			for(int i = 0; i< steviloTockNaKrivulji; i++){
+			for(int i = 0; i< tocke.GetLength(0); i++){
 				Instantiate(tocka,tocke[0,i],Quaternion.identity);
 			} 
 			gor.narisiVsePoti(tocka);
 		}
 		else if(toggleKrizisca != 0){
-			for(int i = 0; i< steviloTockNaKrivulji; i++){
-				Instantiate(tocka,tocke[1,i],Quaternion.identity);
+			for(int i = 0; i < tocke.GetLength(0); i++)
 				Instantiate(tocka,tocke[0,i],Quaternion.identity);
-			} 
+
+			for(int i = 0; i < tocke.GetLength(1); i++)
+				Instantiate(tocka,tocke[1,i],Quaternion.identity);
+
 			gor.narisiVsePoti(tocka);
 			dol.narisiVsePoti(tocka);
 		}
 	}
 
-	public void napolniTabeloTock(int stTock){
+	public void napolniTabeloTock(int stTock, float dolzOdseka){
+		Vector2 p0g = lokacija;
+		Vector2 p0d = lokacija;
+		Vector2 p1g;
+		Vector2 p1d;
+		int stTockVTabeliG = 0;
+		int stTockVTabeliD = 0;
 		if(toggleKrizisca != 0){
-
 			float t = 0;
 			for(int i = 0; i < stTock; i++){
 				t = (float)i/stTock;
+
 				if(toggleKrizisca == 2){
-					tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
+					p1g = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
+					if(Vector2.Distance(p0g,p1g) >= dolzOdseka){
+						tocke[0,stTockVTabeliG] = p1g;
+						stTockVTabeliG++;
+						p0g = p1g;
+					}
 				}
 				else{
-					tocke[1,i] = izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija);
-					tocke[0,i] = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija); 
+					p1g = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
+					if(Vector2.Distance(p0g,p1g) >= dolzOdseka){
+						tocke[0,stTockVTabeliG] = p1g;
+						stTockVTabeliG++;
+						p0g = p1g;
+					}
+					p1d = izracunajBezierTocko (t, lokacija, desno, dol.levo, dol.lokacija);
+					if(Vector2.Distance(p0d,p1d) >= dolzOdseka){
+						tocke[1,stTockVTabeliD] = p1d;
+						stTockVTabeliD++;
+						p0d = p1d;
+					}
 				}
-
 			}
 			if(toggleKrizisca !=2)
-				dol.napolniTabeloTock(stTock);
-			gor.napolniTabeloTock(stTock);
+				dol.napolniTabeloTock(stTock,dolzOdseka);
+			gor.napolniTabeloTock(stTock, dolzOdseka);
 		}
 	}
 	//metoda za izgradnjo poti brez daljice
