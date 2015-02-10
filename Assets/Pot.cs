@@ -13,6 +13,7 @@ namespace PotFunctions{
 		public int stTockZaNatancnost = 500;
 		public Vector2[,] tocke = new Vector2[2,500];
 		public int[] stEltov = new int[2];
+		LineRenderer[] potiLines = new LineRenderer[4];
 
 		public Pot(){
 		
@@ -75,11 +76,10 @@ namespace PotFunctions{
 			napolniTabeloTock (stTockZaNatancnost, dolzinaOdseka, new Vector2(99,99));
 		}
 
-
+		//public int
 
 		public void poveziTockeVPot(Material barva){
 			GameObject[] potiObjects = new GameObject[4];
-			LineRenderer[] potiLines = new LineRenderer[4];
 			for(int i = 0; i < 4; i++){
 				potiObjects[i] = new GameObject();
 				potiObjects[i].AddComponent<LineRenderer> ();
