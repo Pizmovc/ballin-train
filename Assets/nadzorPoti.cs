@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using PotFunctions;
 
-public class Krivulja : MonoBehaviour {
+public class nadzorPoti : MonoBehaviour {
 	
 	public Transform root;
 	public Transform rootDaljice, rootDaljiceDesno;
@@ -12,11 +13,13 @@ public class Krivulja : MonoBehaviour {
 	int spominPoti;
 
 	void Start(){					//pozicija na krivulji, 0 - 1 0=zacPoint, 1=konPoint
-		vseTocke = gameObject.AddComponent<Pot> ();
-		vseTocke.izgradiPot(root);	//zgradimo pot
-		vseTocke = vseTocke.dodajDaljico(rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
+		//vseTocke = gameObject.AddComponent<Pot> ();
+		//vseTocke.izgradiPot(root);	//zgradimo pot
+		//vseTocke = vseTocke.dodajDaljico(rootDaljice, rootDaljiceDesno, vseTocke);	//v pot dodamo daljico s konstruktorjem ki delo opravi za nas
 		//vseTocke.narisiVsePoti (tockaPot);
 		//vseTocke.narisiPot (tockaPotIzbrana);
+
+		vseTocke = new Pot (root, rootDaljice, rootDaljiceDesno);
 		vseTocke.poveziTockeVPot (barvaCrte);
 	}
 

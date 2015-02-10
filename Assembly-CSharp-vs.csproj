@@ -46,8 +46,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Images\Krivulja.cs" />
-     <Compile Include="Assets\Images\Pot.cs" />
+     <Compile Include="Assets\Pot.cs" />
+     <Compile Include="Assets\moveBalls.cs" />
+     <Compile Include="Assets\nadzorPoti.cs" />
+     <Compile Include="Assets\spawnBalls.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>
  </Reference>
