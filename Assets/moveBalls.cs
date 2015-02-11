@@ -12,14 +12,14 @@ public class moveBalls : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		krivulja = GameObject.FindGameObjectWithTag ("nadzornik").GetComponent<nadzorPoti> ().getPot ();
+		transform.position = krivulja.lokacija;
 		spominPoti = krivulja.toggleToIndex();
 		p = krivulja.tocke [spominPoti, 1];
 	}
 
 	void nastaviNaslOdsek(){
-		if (krivulja.toggleKrizisca == 0)
-			Destroy(gameObject);
-		else if (spominPoti == 0) {
+
+		if (spominPoti == 0) {
 			spominPoti = GameObject.FindGameObjectWithTag ("nadzornik").GetComponent<nadzorPoti> ().kamSedaj (predKaterimKriziscemSmo);
 			krivulja = krivulja.gor;
 			predKaterimKriziscemSmo = 2;
@@ -31,17 +31,20 @@ public class moveBalls : MonoBehaviour {
 			predKaterimKriziscemSmo = 3;
 			p = krivulja.tocke[spominPoti,0];
 		}
+		if (krivulja.toggleKrizisca == 0)
+			Destroy(gameObject);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		Vector3 Distance = (Vector3)p - transform.position;
 		transform.position = Vector3.Slerp(transform.position, p, Time.deltaTime * speed);
+
+		Vector3 Distance = (Vector3)p - transform.position;
+
 		if (Distance.sqrMagnitude < 0.2f*0.2f) {
+
 			if(stevec < krivulja.stEltov[spominPoti]){
 				p = krivulja.tocke[spominPoti,stevec++];
-
-				Debug.Log(p);
 			}
 			else{
 				stevec = 0;
