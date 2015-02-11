@@ -39,4 +39,18 @@ public class nadzorPoti : MonoBehaviour {
 	public Pot getPot(){
 		return(vseTocke);
 	}
+
+	public int kamSedaj(int predKaterimKriziscemSmo){
+		if(predKaterimKriziscemSmo == 1){
+			return(vseTocke.gor.toggleToIndex());
+		}
+		else if(predKaterimKriziscemSmo == 2){
+			return(vseTocke.gor.gor.toggleToIndex());
+		}
+		else if(predKaterimKriziscemSmo == 3){
+			return(vseTocke.gor.dol.toggleToIndex());
+		}
+		else return(-1);
+			
+	}
 }

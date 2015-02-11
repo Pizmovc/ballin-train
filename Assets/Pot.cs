@@ -76,7 +76,14 @@ namespace PotFunctions{
 			napolniTabeloTock (stTockZaNatancnost, dolzinaOdseka, new Vector2(99,99));
 		}
 
-		//public int
+		public int toggleToIndex(){
+			if(toggleKrizisca > 0)
+				return(0);
+			else if(toggleKrizisca < 0)
+				return(1);
+			else
+				return(-1);
+		}
 
 		public void poveziTockeVPot(Material barva){
 			GameObject[] potiObjects = new GameObject[4];
