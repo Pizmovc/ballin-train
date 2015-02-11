@@ -141,24 +141,31 @@ namespace PotFunctions{
 		}
 		
 		public void narisiPot(GameObject tocka){
-			foreach(GameObject temp in GameObject.FindGameObjectsWithTag("trenutnaPotTocka"))
-			      GameObject.Destroy(temp);
-			izrisiTrenutneKroglice (tocka);
+			izrisiTrenutneKroglice (tocka, "prviOdsek");
+			gor.izrisiTrenutneKroglice (tocka, "drugiOdsek");
+			gor.gor.izrisiTrenutneKroglice (tocka, "tretjiOdsekZgoraj");
+			gor.dol.izrisiTrenutneKroglice (tocka, "tretjiOdsekSpodaj");
 		}
 
-		public void izrisiTrenutneKroglice(GameObject tocka){
+		public void izrisiTrenutneKroglice(GameObject tocka, string tag){
+			GameObject temp;
+			foreach(GameObject X in GameObject.FindGameObjectsWithTag(tag))
+				GameObject.Destroy(X);
+
 			if (toggleKrizisca > 0) {
 				for(int i = 0; i < stEltov[0]; i++){
-					Instantiate(tocka,new Vector3(tocke[0,i].x,tocke[0,i].y, -1),Quaternion.identity);
-				} 
-				gor.izrisiTrenutneKroglice(tocka);
+					temp = (GameObject)Instantiate(tocka,new Vector3(tocke[0,i].x,tocke[0,i].y, -1),Quaternion.identity);
+					temp.tag = tag;
+				}
+				//gor.izrisiTrenutneKroglice(tocka, tag);
 			}
 			else if(toggleKrizisca < 0){
 				for(int i = 0; i < stEltov[1]; i++){
-					Instantiate(tocka,new Vector3(tocke[1,i].x,tocke[1,i].y, -1),Quaternion.identity);
+					temp = (GameObject)Instantiate(tocka,new Vector3(tocke[1,i].x,tocke[1,i].y, -1),Quaternion.identity);
+					temp.tag = tag;
 					
 				}
-				dol.izrisiTrenutneKroglice(tocka);
+				//dol.izrisiTrenutneKroglice(tocka, tag);
 			}
 		}
 

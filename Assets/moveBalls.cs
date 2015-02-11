@@ -19,20 +19,26 @@ public class moveBalls : MonoBehaviour {
 
 	void nastaviNaslOdsek(){
 
-		if (spominPoti == 0) {
-			spominPoti = GameObject.FindGameObjectWithTag ("nadzornik").GetComponent<nadzorPoti> ().kamSedaj (predKaterimKriziscemSmo);
-			krivulja = krivulja.gor;
+		krivulja = GameObject.FindGameObjectWithTag ("nadzornik").GetComponent<nadzorPoti> ().kamSedaj (predKaterimKriziscemSmo);
+		spominPoti = krivulja.toggleToIndex();
+		if (spominPoti == -1) {
+			Destroy (gameObject);
+		}
+		else
+			p = krivulja.tocke[spominPoti,0];
+		if(predKaterimKriziscemSmo == 1 && spominPoti == 0)
 			predKaterimKriziscemSmo = 2;
-			p = krivulja.tocke[spominPoti,0];
-		}
-		else if (spominPoti == 1) {
-			spominPoti = GameObject.FindGameObjectWithTag ("nadzornik").GetComponent<nadzorPoti> ().kamSedaj (predKaterimKriziscemSmo);
-			krivulja = krivulja.dol;
+		else if(predKaterimKriziscemSmo == 1 && spominPoti == 1)
 			predKaterimKriziscemSmo = 3;
-			p = krivulja.tocke[spominPoti,0];
-		}
-		if (krivulja.toggleKrizisca == 0)
-			Destroy(gameObject);
+		else if(predKaterimKriziscemSmo == 2 && spominPoti == 0)
+			predKaterimKriziscemSmo = 4;
+		else if(predKaterimKriziscemSmo == 2 && spominPoti == 1)
+			predKaterimKriziscemSmo = 5;
+		else if(predKaterimKriziscemSmo == 3 && spominPoti == 0)
+			predKaterimKriziscemSmo = 6;
+		else if(predKaterimKriziscemSmo == 3 && spominPoti == 1)
+			predKaterimKriziscemSmo = 7;
+
 	}
 
 	// Update is called once per frame

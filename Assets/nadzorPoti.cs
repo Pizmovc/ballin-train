@@ -16,6 +16,7 @@ public class nadzorPoti : MonoBehaviour {
 		vseTocke = new Pot (root, rootDaljice, rootDaljiceDesno);
 		vseTocke.poveziTockeVPot (barvaCrte);
 		vseTocke.narisiPot (tockaPotIzbrana);
+
 		//vseTocke.narisiVsePoti (tockaPot);
 	}
 
@@ -40,17 +41,29 @@ public class nadzorPoti : MonoBehaviour {
 		return(vseTocke);
 	}
 
-	public int kamSedaj(int predKaterimKriziscemSmo){
+	public Pot kamSedaj(int predKaterimKriziscemSmo){
 		if(predKaterimKriziscemSmo == 1){
-			return(vseTocke.gor.toggleToIndex());
+			return(vseTocke.gor);
 		}
 		else if(predKaterimKriziscemSmo == 2){
-			return(vseTocke.gor.gor.toggleToIndex());
+			return(vseTocke.gor.gor);
 		}
 		else if(predKaterimKriziscemSmo == 3){
-			return(vseTocke.gor.dol.toggleToIndex());
+			return(vseTocke.gor.dol);
 		}
-		else return(-1);
+		else if(predKaterimKriziscemSmo == 4){
+			return(vseTocke.gor.gor.gor);
+		}
+		else if(predKaterimKriziscemSmo == 5){
+			return(vseTocke.gor.gor.dol);
+		}
+		else if(predKaterimKriziscemSmo == 6){
+			return(vseTocke.gor.dol.gor);
+		}
+		else if(predKaterimKriziscemSmo == 7){
+			return(vseTocke.gor.dol.dol);
+		}
+		else return (vseTocke);
 			
 	}
 }
