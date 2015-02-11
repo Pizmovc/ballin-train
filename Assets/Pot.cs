@@ -13,7 +13,7 @@ namespace PotFunctions{
 		public int stTockZaNatancnost = 500;
 		public Vector2[,] tocke = new Vector2[2,500];
 		public int[] stEltov = new int[2];
-		LineRenderer[] potiLines = new LineRenderer[4];
+
 
 		public Pot(){
 		
@@ -70,7 +70,7 @@ namespace PotFunctions{
 		public void dodajDaljico(Transform rootDaljice, Transform rootDaljiceDesno, Pot endDaljice){
 			lokacija = rootDaljice.position;
 			desno = new Vector2(2*(rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X desne kontrolne točke začetka daljice za smooth sailing
-			toggleKrizisca = 2;	//vedno 2 (gre "gor", samo da gre naravnost in nima poti za dol)
+			toggleKrizisca = 3;	//vedno 2 (gre "gor", samo da gre naravnost in nima poti za dol)
 			endDaljice.levo = new Vector2((rootDaljiceDesno.position.x + endDaljice.levo.x)/3, rootDaljice.position.y);	//izračunamo X leve kontrolne točke konca daljice za smooth sailing
 			gor = endDaljice;
 			napolniTabeloTock (stTockZaNatancnost, dolzinaOdseka, new Vector2(99,99));
@@ -85,66 +85,41 @@ namespace PotFunctions{
 				return(-1);
 		}
 
-		public void poveziTockeVPot(Material barva){
-			GameObject[] potiObjects = new GameObject[4];
-			for(int i = 0; i < 4; i++){
-				potiObjects[i] = new GameObject();
-				potiObjects[i].AddComponent<LineRenderer> ();
-				potiObjects[i].GetComponent<LineRenderer>().material = barva;
-				potiObjects[i].GetComponent<LineRenderer>().SetWidth (0.1f, 0.1f);
-				potiObjects[i].GetComponent<LineRenderer>().SetColors (Color.blue, Color.blue);
-				potiLines[i] = potiObjects[i].GetComponent<LineRenderer>();
-			}
-			potiLines [0].SetVertexCount (stEltov [0] + gor.stEltov[0] + gor.gor.stEltov[0]);
-			for (int i = 0; i < stEltov [0]; i++) {
-				potiLines[0].SetPosition(i,tocke[0,i]);
-			}
-			for (int i = 0; i < gor.stEltov [0]; i++) {
-				potiLines[0].SetPosition(i+stEltov[0],gor.tocke[0,i]);
-			}
-			for (int i = 0; i < gor.gor.stEltov [0]; i++) {
-				potiLines[0].SetPosition(i+stEltov[0]+gor.stEltov [0],gor.gor.tocke[0,i]);
-			}
+		public void poveziTockeVPot(Material aktiven, Material neAktiven){
+			GameObject[] potiObjects = new GameObject[2];
+			int index;
+			bool prvic = true;
+			for(int j = 0; j<2; j++){
+				index = (toggleToIndex() + j) % 2 ;
+				potiObjects[index] = new GameObject();
+				new Vector3(potiObjects[index].transform.position.y,potiObjects[index].transform.position.z,-1);
+				potiObjects[index].AddComponent<LineRenderer>();
+				//potiObjects[index].GetComponent<LineRenderer>().material = new Material(Shader.Find("Particles/Additive"));
 
-			potiLines [1].SetVertexCount (stEltov [0] + gor.stEltov[0] + gor.gor.stEltov[1]);
-			for (int i = 0; i < stEltov [0]; i++) {
-				potiLines[1].SetPosition(i,tocke[0,i]);
-			}
-			for (int i = 0; i < gor.stEltov [0]; i++) {
-				potiLines[1].SetPosition(i+stEltov[0],gor.tocke[0,i]);
-			}
-			for (int i = 0; i < gor.gor.stEltov [1]; i++) {
-				potiLines[1].SetPosition(i+stEltov[0]+gor.stEltov [0],gor.gor.tocke[1,i]);
-			}
-
-			potiLines [2].SetVertexCount (stEltov [0] + gor.stEltov[1] + gor.dol.stEltov[0]);
-			for (int i = 0; i < stEltov [0]; i++) {
-				potiLines[2].SetPosition(i,tocke[0,i]);
-			}
-			for (int i = 0; i < gor.stEltov [1]; i++) {
-				potiLines[2].SetPosition(i+stEltov[0],gor.tocke[1,i]);
-			}
-			for (int i = 0; i < gor.dol.stEltov [0]; i++) {
-				potiLines[2].SetPosition(i+stEltov[0]+gor.stEltov [1],gor.dol.tocke[0,i]);
-			}
-			
-			potiLines [3].SetVertexCount (stEltov [0] + gor.stEltov[1] + gor.dol.stEltov[1]);
-			for (int i = 0; i < stEltov [0]; i++) {
-				potiLines[3].SetPosition(i,tocke[0,i]);
-			}
-			for (int i = 0; i < gor.stEltov [1]; i++) {
-				potiLines[3].SetPosition(i+stEltov[0],gor.tocke[1,i]);
-			}
-			for (int i = 0; i < gor.dol.stEltov [1]; i++) {
-				potiLines[3].SetPosition(i+stEltov[0]+gor.stEltov [1],gor.dol.tocke[1,i]);
+				potiObjects[index].GetComponent<LineRenderer>().SetWidth (0.1f, 0.1f);
+				if(prvic){
+					//potiObjects[index].GetComponent<LineRenderer>().material.color = aktivna;
+					potiObjects[index].GetComponent<LineRenderer>().material = aktiven;
+					prvic = false;
+				}
+				else{
+					potiObjects[index].GetComponent<LineRenderer>().material = neAktiven;
+				}
+				potiObjects[index].GetComponent<LineRenderer>().SetVertexCount (stEltov [index]);
+				for (int i = 0; i < stEltov [index]; i++) {
+					potiObjects[index].GetComponent<LineRenderer>().SetPosition(i,new Vector3(tocke[index,i].x,tocke[index,i].y,-0.01f));
+				}
+				//potiObjects[index].GetComponent<LineRenderer>().renderer.enabled = true;
+				if(toggleKrizisca == 3)
+					break;
 			}
 		}
 		
-		public void narisiPot(GameObject tocka){
-			izrisiTrenutneKroglice (tocka, "prviOdsek");
-			gor.izrisiTrenutneKroglice (tocka, "drugiOdsek");
-			gor.gor.izrisiTrenutneKroglice (tocka, "tretjiOdsekZgoraj");
-			gor.dol.izrisiTrenutneKroglice (tocka, "tretjiOdsekSpodaj");
+		public void narisiPot(Material aktiven, Material neAktiven){
+			poveziTockeVPot (aktiven, neAktiven);
+			gor.poveziTockeVPot (aktiven, neAktiven);
+			gor.gor.poveziTockeVPot (aktiven, neAktiven);
+			gor.dol.poveziTockeVPot (aktiven, neAktiven);
 		}
 
 		public void izrisiTrenutneKroglice(GameObject tocka, string tag){
@@ -170,7 +145,7 @@ namespace PotFunctions{
 		}
 
 		public void narisiVsePoti(GameObject tocka){
-			if (toggleKrizisca == 2) {
+			if (toggleKrizisca == 3) {
 				for(int i = 0; i< stEltov[0]; i++){
 					Instantiate(tocka,tocke[0,i],Quaternion.identity);
 				} 
@@ -208,7 +183,7 @@ namespace PotFunctions{
 				for(int i = 0; i < stTock; i++){
 					t = (float)i/stTock;
 
-					if(toggleKrizisca == 2){
+					if(toggleKrizisca == 3){
 						p1g = izracunajBezierTocko (t, lokacija, desno, gor.levo, gor.lokacija);
 						if(Vector2.Distance(p0g,p1g) >= dolzOdseka){
 							tocke[0,stTockVTabeliG] = p1g;
@@ -233,7 +208,7 @@ namespace PotFunctions{
 				}
 				stEltov[0]= stTockVTabeliG;
 				stEltov[1]= stTockVTabeliD;
-				if(toggleKrizisca !=2)
+				if(toggleKrizisca !=3)
 					dol.napolniTabeloTock(stTock,dolzOdseka, p0d);
 				gor.napolniTabeloTock(stTock, dolzOdseka, p0g);
 			}

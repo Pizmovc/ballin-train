@@ -8,14 +8,13 @@ public class nadzorPoti : MonoBehaviour {
 	public Transform rootDaljice, rootDaljiceDesno;
 	public GameObject tockaPot;
 	public GameObject tockaPotIzbrana;
-	public Material barvaCrte;
+	public Material barvaAktivna, barvaNeAktivna;
 	Pot vseTocke, kopijaTock;
 	int spominPoti;
 
 	void Start(){					//pozicija na krivulji, 0 - 1 0=zacPoint, 1=konPoint
 		vseTocke = new Pot (root, rootDaljice, rootDaljiceDesno);
-		vseTocke.poveziTockeVPot (barvaCrte);
-		vseTocke.narisiPot (tockaPotIzbrana);
+		vseTocke.narisiPot (barvaAktivna, barvaNeAktivna);
 
 		//vseTocke.narisiVsePoti (tockaPot);
 	}
@@ -25,15 +24,15 @@ public class nadzorPoti : MonoBehaviour {
 		//bomo dal to v novo skripto za input (ker pač keys, touch...)
 		if(Input.GetKeyDown("a")){
 			vseTocke.flipKrizisce(1); //flipa prvega
-			vseTocke.narisiPot (tockaPotIzbrana);
+			vseTocke.narisiPot (barvaAktivna, barvaNeAktivna);
 		}
 		else if(Input.GetKeyDown("i")){
 			vseTocke.flipKrizisce(2);	//flipa gornjega
-			vseTocke.narisiPot (tockaPotIzbrana);
+			vseTocke.narisiPot (barvaAktivna, barvaNeAktivna);
 		}
 		else if(Input.GetKeyDown("j")){
 			vseTocke.flipKrizisce(3);	//flipa spodnjega
-			vseTocke.narisiPot (tockaPotIzbrana);
+			vseTocke.narisiPot (barvaAktivna, barvaNeAktivna);
 		}
 	}
 
